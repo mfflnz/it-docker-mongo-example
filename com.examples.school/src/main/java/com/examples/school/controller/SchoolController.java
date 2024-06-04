@@ -5,6 +5,7 @@ import com.examples.school.repository.StudentRepository;
 import com.examples.school.view.StudentView;
 
 public class SchoolController {
+	
 	private StudentView studentView;
 	private StudentRepository studentRepository;
 

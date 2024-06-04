@@ -8,6 +8,7 @@ import javax.swing.JPanel;
 import javax.swing.DefaultListModel;
 import javax.swing.border.EmptyBorder;
 
+import com.examples.school.controller.SchoolController;
 import com.examples.school.model.Student;
 import java.awt.GridBagLayout;
 import javax.swing.JLabel;
@@ -36,6 +37,16 @@ public class StudentSwingView extends JFrame implements StudentView {
 	
 	private JList<Student> listStudents;
 	private DefaultListModel<Student> listStudentsModel;
+	
+	private SchoolController schoolController;
+	
+	public SchoolController getSchoolController() {
+		return schoolController;
+	}
+
+	public void setSchoolController(SchoolController schoolController) {
+		this.schoolController = schoolController;
+	}
 
 	/**
 	 * Launch the application.
@@ -125,6 +136,7 @@ public class StudentSwingView extends JFrame implements StudentView {
 		
 		btnAdd = new JButton("Add");
 		btnAdd.setEnabled(false);
+		btnAdd.addActionListener(e -> schoolController.newStudent(new Student(txtId.getText(), txtName.getText())));
 		GridBagConstraints gbc_btnAdd = new GridBagConstraints();
 		gbc_btnAdd.insets = new Insets(0, 0, 5, 0);
 		gbc_btnAdd.gridwidth = 2;
@@ -181,13 +193,19 @@ public class StudentSwingView extends JFrame implements StudentView {
 
 	@Override
 	public void studentAdded(Student student) {
-		// TODO Auto-generated method stub
+		listStudentsModel.addElement(student);
+		resetErrorLabel();
+	}
+
+	private void resetErrorLabel() {
+		lblErrorMessage.setText(" ");
 		
 	}
 
 	@Override
 	public void studentRemoved(Student student) {
-		// TODO Auto-generated method stub
+		listStudentsModel.removeElement(student);
+		resetErrorLabel();
 		
 	}
 
