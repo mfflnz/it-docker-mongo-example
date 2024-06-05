@@ -7,9 +7,6 @@ import java.util.Arrays;
 
 import javax.swing.DefaultListModel;
 
-import org.junit.Test;
-
-import org.assertj.swing.junit.runner.GUITestRunner;
 import org.assertj.swing.annotation.GUITest;
 import org.assertj.swing.core.matcher.JButtonMatcher;
 import org.assertj.swing.core.matcher.JLabelMatcher;
@@ -17,12 +14,15 @@ import org.assertj.swing.edt.GuiActionRunner;
 import org.assertj.swing.fixture.FrameFixture;
 import org.assertj.swing.fixture.JButtonFixture;
 import org.assertj.swing.fixture.JTextComponentFixture;
+import org.assertj.swing.junit.runner.GUITestRunner;
 import org.assertj.swing.junit.testcase.AssertJSwingJUnitTestCase;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import com.examples.school.controller.SchoolController;
+
 import com.examples.school.model.Student;
 
 @RunWith(GUITestRunner.class)
@@ -151,6 +151,20 @@ public class StudentSwingViewTest extends AssertJSwingJUnitTestCase {
 		window.textBox("nameTextBox").enterText("test");
 		window.button(JButtonMatcher.withText("Add")).click();
 		verify(schoolController).newStudent(new Student("1", "test"));
+	}
+
+	@Test
+	public void testDeleteButtonShouldDelegateToSchoolControllerDeleteStudent() {
+		Student student1 = new Student("1", "test1");
+		Student student2 = new Student("2", "test2");
+		GuiActionRunner.execute(() -> {
+			DefaultListModel<Student> listStudentsModel = studentSwingView.getListStudentsModel();
+			listStudentsModel.addElement(student1);
+			listStudentsModel.addElement(student2);
+		});
+		window.list("studentList").selectItem(1);
+		window.button(JButtonMatcher.withText("Delete Selected")).click();
+		verify(schoolController).deleteStudent(student2);
 	}
 
 }

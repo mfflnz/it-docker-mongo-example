@@ -1,53 +1,46 @@
 package com.examples.school.view;
 
 import java.awt.EventQueue;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.util.List;
 
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.DefaultListModel;
 import javax.swing.border.EmptyBorder;
 
 import com.examples.school.controller.SchoolController;
 import com.examples.school.model.Student;
-import java.awt.GridBagLayout;
-import javax.swing.JLabel;
-import java.awt.GridBagConstraints;
 import javax.swing.JTextField;
-import javax.swing.ListSelectionModel;
-
 import java.awt.Insets;
+
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
-import javax.swing.JScrollPane;
 import javax.swing.JList;
+import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
+import java.awt.Color;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 public class StudentSwingView extends JFrame implements StudentView {
 
 	private static final long serialVersionUID = 1L;
+	
 	private JPanel contentPane;
 	private JTextField txtId;
-	private JLabel lblName;
 	private JTextField txtName;
 	private JButton btnAdd;
+	private JList<Student> listStudents;
 	private JScrollPane scrollPane;
 	private JButton btnDeleteSelected;
 	private JLabel lblErrorMessage;
 	
-	private JList<Student> listStudents;
 	private DefaultListModel<Student> listStudentsModel;
 	
 	private SchoolController schoolController;
-	
-	public SchoolController getSchoolController() {
-		return schoolController;
-	}
-
-	public void setSchoolController(SchoolController schoolController) {
-		this.schoolController = schoolController;
-	}
-
+		
 	/**
 	 * Launch the application.
 	 */
@@ -69,16 +62,19 @@ public class StudentSwingView extends JFrame implements StudentView {
 		return listStudentsModel;		
 	}
 
+	public void setSchoolController(SchoolController schoolController) {
+		this.schoolController = schoolController;
+	}
+
 	/**
 	 * Create the frame.
 	 */
 	public StudentSwingView() {
-				
+		setTitle("Student View");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-
 		setContentPane(contentPane);
 		GridBagLayout gbl_contentPane = new GridBagLayout();
 		gbl_contentPane.columnWidths = new int[]{0, 0, 0};
@@ -115,7 +111,7 @@ public class StudentSwingView extends JFrame implements StudentView {
 		contentPane.add(txtId, gbc_txtId);
 		txtId.setColumns(10);
 		
-		lblName = new JLabel("name");
+		JLabel lblName = new JLabel("name");
 		GridBagConstraints gbc_lblName = new GridBagConstraints();
 		gbc_lblName.anchor = GridBagConstraints.EAST;
 		gbc_lblName.insets = new Insets(0, 0, 5, 5);
@@ -162,6 +158,7 @@ public class StudentSwingView extends JFrame implements StudentView {
 		
 		btnDeleteSelected = new JButton("Delete Selected");
 		btnDeleteSelected.setEnabled(false);
+		btnDeleteSelected.addActionListener(e -> schoolController.deleteStudent(listStudents.getSelectedValue()));
 		GridBagConstraints gbc_btnDeleteSelected = new GridBagConstraints();
 		gbc_btnDeleteSelected.insets = new Insets(0, 0, 5, 0);
 		gbc_btnDeleteSelected.gridwidth = 2;
@@ -170,12 +167,14 @@ public class StudentSwingView extends JFrame implements StudentView {
 		contentPane.add(btnDeleteSelected, gbc_btnDeleteSelected);
 		
 		lblErrorMessage = new JLabel(" ");
+		lblErrorMessage.setForeground(Color.RED);
 		lblErrorMessage.setName("errorMessageLabel");
-		GridBagConstraints gbc_label = new GridBagConstraints();
-		gbc_label.insets = new Insets(0, 0, 0, 5);
-		gbc_label.gridx = 0;
-		gbc_label.gridy = 5;
-		contentPane.add(lblErrorMessage, gbc_label);
+		GridBagConstraints gbc_lblErrorMessage = new GridBagConstraints();
+		gbc_lblErrorMessage.gridwidth = 2;
+		gbc_lblErrorMessage.insets = new Insets(0, 0, 0, 5);
+		gbc_lblErrorMessage.gridx = 0;
+		gbc_lblErrorMessage.gridy = 5;
+		contentPane.add(lblErrorMessage, gbc_lblErrorMessage);
 		
 	}
 
@@ -197,16 +196,15 @@ public class StudentSwingView extends JFrame implements StudentView {
 		resetErrorLabel();
 	}
 
-	private void resetErrorLabel() {
-		lblErrorMessage.setText(" ");
-		
-	}
-
 	@Override
 	public void studentRemoved(Student student) {
 		listStudentsModel.removeElement(student);
 		resetErrorLabel();
 		
 	}
-
+	
+	private void resetErrorLabel() {
+		lblErrorMessage.setText(" ");
+		
+	}
 }
